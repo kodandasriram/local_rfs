@@ -1,0 +1,592 @@
+{
+	"info": {
+		"_postman_id": "61aa6eb7-87f8-44c3-99a3-9efa82b0a6e2",
+		"name": "Smartlinx STG_ rfms",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43345226"
+	},
+	"item": [
+		{
+			"name": "Stg Rfms Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//console.log (pm.response.json());\r",
+							"const bearerToken =  pm.response.json();\r",
+							"//console.log(bearerToken.data.response.token)\r",
+							"const bearertkn = bearerToken.data.response.token;\r",
+							"pm.collectionVariables.set(\"rfmstoken\",bearertkn);\r",
+							"\r",
+							"pm.test(\"Verify status code\", function()\r",
+							"{\r",
+							"    pm.response.to.have.status(200); \r",
+							"}\r",
+							"\r",
+							")\r",
+							"\r",
+							"pm.test(\"Verify token is not null\", function()\r",
+							"{\r",
+							"    pm.expect(bearerToken.data.response.token).is.not.null\r",
+							"}\r",
+							")\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-slx-alias",
+						"value": "rfmsstg",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{username: \"system\", password: \"M3t@phys!c@l\"}"
+				},
+				"url": {
+					"raw": "https://v6-dev-api-man.azure-api.net/stg/api/v1/jwt/auth",
+					"protocol": "https",
+					"host": [
+						"v6-dev-api-man",
+						"azure-api",
+						"net"
+					],
+					"path": [
+						"stg",
+						"api",
+						"v1",
+						"jwt",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddEmployee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Verify response status code\r",
+							"pm.test(\"Verify Status code\", function ()\r",
+							"{\r",
+							"    pm.response.to.have.status(200);\r",
+							"}\r",
+							")  \r",
+							"const jsonData = pm.response.json()\r",
+							"console.log(jsonData)\r",
+							"pm.collectionVariables.set(\"EmpID\",jsonData.data.id)\r",
+							"console.log(\"EmpID is stored successfully in the Collection Variable\")"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Dynamic generation of random fName\r",
+							"pm.collectionVariables.set(\"fName\",pm.variables.replaceIn('{{$randomFirstName}}'))\r",
+							"//Dynamic generation of random lName\r",
+							"pm.collectionVariables.set(\"lName\",pm.variables.replaceIn('{{$randomLastName}}'))\r",
+							"//Dynamic generation of random 9-digit SSN number\r",
+							"pm.collectionVariables.set(\"SSN\",Math.floor(100000000 + Math.random() * 900000000))\r",
+							"//Dynamic generation of random 8-digit BadgeID\r",
+							"pm.collectionVariables.set(\"Badgeid\",Math.floor(Math.random() * 90000000));\r",
+							"//Dynamic generation of random 10-digit PayrollNo\r",
+							"pm.collectionVariables.set(\"PayrollNo\",Math.floor(Math.random() * 900000000));\r",
+							"\r",
+							"//Upload employee details through csv or json file. postman allows only csv and json\r",
+							"//pm.collectionVariables.set(\"pass variable\", pm.iterationData.get(\"CSV COLUMN NAME\"));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{rfmstoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"{{fName}}\",\r\n    \"lastName\": \"{{lName}}\",\r\n    \"middleName\": \"Rfms Middle\",\r\n    \"suffix\": \"RFMS Suffix\",\r\n    \"employeeType\": {\r\n        \"name\": \"FT\",\r\n        \"description\": \"Full Time                                         \",\r\n        \"fullTimeIndex\": \"Y\"\r\n    },\r\n    \"position\": {\r\n        \"id\": 121,\r\n        \"name\": \"RFMS Staff\",\r\n        \"orgLevelId\": 100071,\r\n        \"positionGroupId\": null,\r\n        \"positionGroupName\": null,\r\n        \"group\": null,\r\n        \"groupedWithPositionId\": null,\r\n        \"startDate\": \"01-01-1900\",\r\n        \"endDate\": \"06-06-2079\"\r\n    },\r\n    \"payrollNumber\": \"{{PayrollNo}}\",\r\n    \"ssn\": \"{{SSN}}\",\r\n    \"hireDate\": \"04-07-2022 00:00:00\",\r\n    \"birthDate\": \"04-01-2008 00:00:00\",\r\n    \"payPolicy\": {\r\n        \"name\": \"Hourly No Benefits\",\r\n        \"description\": \"Hourly No Benefits\"\r\n    },\r\n    \"shiftDiffPolicy\": {\r\n        \"name\": \"No_Diff\",\r\n        \"description\": \"No_Diff\"\r\n    },\r\n    \"payType\": \"Salaried\",\r\n    \"exemptStatus\": \"Weekly Hours spread evenly across weekdays\",\r\n    \"workWeekHours\": 34,\r\n    \"dailyBenefitHours\": null,\r\n    \"hourlyRate\": null,\r\n    \"hourlyRate2\": null,\r\n    \"hourlyRate3\": null,\r\n    \"payClass\": null,\r\n    \"companyCode\": null,\r\n    \"fileNumber\": null,\r\n    \"address\": \"Hyderaba\",\r\n    \"city\": \"Hyderabad\",\r\n    \"state\": \"KS\",\r\n    \"zipCode\": \"42431\",\r\n    \"phone\": \"(234) 234-2343\",\r\n    \"mobilePhone\": \"(345) 345-3453\",\r\n    \"altPhone\": \"(234) 234-3442\",\r\n    \"email1\": \"testdemo3@smartlinx.com\",\r\n    \"email2\": \"testdemo3@smartlinx.com\",\r\n    \"gender\": \"Male\",\r\n    \"maritalStatus\": \"Married\",\r\n    \"race\": \"White\",\r\n    \"badgeId\": \"{{Badgeid}}\",\r\n    \"timeclockIds\": [],\r\n    \"enableTimesheetsAccess\": false,\r\n    \"accessType\": null,\r\n    \"timeCard\": false,\r\n    \"schedule\": false,\r\n    \"availability\": false,\r\n    \"departmentSchedule\": false,\r\n    \"inservice\": false,\r\n    \"payStubs\": false,\r\n    \"allowPasswordChange\": false,\r\n    \"allowAddressChange\": false,\r\n    \"password\": null,\r\n    \"benefitClassId\": 3,\r\n    \"benefitClassEffectiveDate\": \"04-07-2022 00:00:00\",\r\n    \"optInRequest\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://v6devapiman.smartlinxsolutions.com/stg/api/v1/employees",
+					"protocol": "https",
+					"host": [
+						"v6devapiman",
+						"smartlinxsolutions",
+						"com"
+					],
+					"path": [
+						"stg",
+						"api",
+						"v1",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1.1Employee Personal/Licenses",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Verify License inserted status code\", function()\r",
+							"{\r",
+							"pm.response.to.have.status(204)\r",
+							"}\r",
+							")"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{rfmstoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"licensesSubsection\": {\r\n        \"licenses\": [\r\n            {\r\n                \"licenseNumber\": \"One License\",\r\n                \"expirationDate\": \"04-30-2025\",\r\n                \"budgetedPosition\": {\r\n                    \"id\": 260,\r\n                    \"description\": \"RFMS Staff\"\r\n                },\r\n                \"licenseType\": {},\r\n                \"issueDate\": \"04-15-2025\",\r\n                \"seq\": 0\r\n            },\r\n            {\r\n                \"licenseNumber\": \"Two license\",\r\n                \"expirationDate\": \"04-28-2025\",\r\n                \"budgetedPosition\": {\r\n                    \"id\": 257,\r\n                    \"description\": \"RFMS AR\"\r\n                },\r\n                \"licenseType\": {},\r\n                \"issueDate\": \"04-17-2025\",\r\n                \"seq\": 0\r\n            },\r\n            {\r\n                \"licenseNumber\": \"Three license\",\r\n                \"expirationDate\": \"04-24-2025\",\r\n                \"budgetedPosition\": {\r\n                    \"id\": 256,\r\n                    \"description\": \"MAIN DEPARTMENT\"\r\n                },\r\n                \"licenseType\": {},\r\n                \"issueDate\": \"04-18-2025\",\r\n                \"seq\": 0\r\n            },\r\n            {\r\n                \"licenseNumber\": \"Four License\",\r\n                \"expirationDate\": \"04-08-2025\",\r\n                \"budgetedPosition\": {\r\n                    \"id\": 257,\r\n                    \"description\": \"RFMS AR\"\r\n                },\r\n                \"licenseType\": {},\r\n                \"issueDate\": \"04-16-2025\",\r\n                \"seq\": 0\r\n            }\r\n        ]\r\n    },\r\n    \"metadata\": {\r\n        \"actions\": [\r\n            \"edit\",\r\n            \"add\",\r\n            \"delete\"\r\n        ],\r\n        \"fields\": [\r\n            {\r\n                \"fieldName\": \"budgetedPosition\",\r\n                \"isIdentifier\": false,\r\n                \"access\": \"full\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"budgetedPosition.Id\",\r\n                \"isIdentifier\": true,\r\n                \"access\": \"read\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"issueDate\",\r\n                \"isIdentifier\": false,\r\n                \"access\": \"full\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"expirationDate\",\r\n                \"isIdentifier\": false,\r\n                \"access\": \"full\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"licenseNumber\",\r\n                \"isIdentifier\": false,\r\n                \"access\": \"full\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"seq\",\r\n                \"isIdentifier\": true,\r\n                \"access\": \"read\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"licenseType\",\r\n                \"isIdentifier\": false,\r\n                \"access\": \"full\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"licenseType.LicenseTypeID\",\r\n                \"isIdentifier\": true,\r\n                \"access\": \"read\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            }\r\n        ]\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://v6devapiman.smartlinxsolutions.com/stg/api/v1/employees/{{EmpID}}/sections/personal/licenses",
+					"protocol": "https",
+					"host": [
+						"v6devapiman",
+						"smartlinxsolutions",
+						"com"
+					],
+					"path": [
+						"stg",
+						"api",
+						"v1",
+						"employees",
+						"{{EmpID}}",
+						"sections",
+						"personal",
+						"licenses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1.2Employee Personal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsondata = pm.response.json();\r",
+							"//console.log(jsondata)\r",
+							"console.log(jsondata.data.licenses.data.licenses)\r",
+							"const liclength = jsondata.data.licenses.data.licenses\r",
+							"//const licdata = jsondata.data.licenses\r",
+							"//console.log(jsondata.data.licenses.data.licenses[0])\r",
+							"//from array by iterating we are getting required value\r",
+							"\r",
+							"pm.test(\"Verify Licenses is inserted properly\",function()\r",
+							"{\r",
+							"\r",
+							" const lic = jsondata.data.licenses.data.licenses.find(f => f.licenseNumber == 'Three license')\r",
+							" console.log(lic)\r",
+							" \r",
+							"}\r",
+							"\r",
+							")\r",
+							"\r",
+							"pm.test(\"Print each all license\",function()\r",
+							"{\r",
+							"const alllic = jsondata.data.licenses.data.licenses.find(f => f.licenseNumber)\r",
+							" console.log(alllic)\r",
+							"}\r",
+							")\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{rfmstoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://v6devapiman.smartlinxsolutions.com/stg/api/v1/employees/{{EmpID}}/sections/Personal",
+					"protocol": "https",
+					"host": [
+						"v6devapiman",
+						"smartlinxsolutions",
+						"com"
+					],
+					"path": [
+						"stg",
+						"api",
+						"v1",
+						"employees",
+						"{{EmpID}}",
+						"sections",
+						"Personal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1.3Employee Personal/contracts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"verify the status code\", function()\r",
+							"{\r",
+							"    pm.response.to.have.status(200)\r",
+							"}\r",
+							")"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{rfmstoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://v6devapiman.smartlinxsolutions.com/stg/api/v1/employees/{{EmpID}}/sections/Personal/contacts",
+					"protocol": "https",
+					"host": [
+						"v6devapiman",
+						"smartlinxsolutions",
+						"com"
+					],
+					"path": [
+						"stg",
+						"api",
+						"v1",
+						"employees",
+						"{{EmpID}}",
+						"sections",
+						"Personal",
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.Employee Employment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"verify the status code\", function()\r",
+							"{\r",
+							"    pm.response.to.have.status(200)\r",
+							"}\r",
+							")"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{rfmstoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://v6devapiman.smartlinxsolutions.com/stg/api/v1/employees/{{EmpID}}/sections/Employment",
+					"protocol": "https",
+					"host": [
+						"v6devapiman",
+						"smartlinxsolutions",
+						"com"
+					],
+					"path": [
+						"stg",
+						"api",
+						"v1",
+						"employees",
+						"{{EmpID}}",
+						"sections",
+						"Employment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.Employee Schedule",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"verify the status code\", function()\r",
+							"{\r",
+							"    pm.response.to.have.status(200)\r",
+							"}\r",
+							")"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{rfmstoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://v6devapiman.smartlinxsolutions.com/stg/api/v1/employees/{{EmpID}}/sections/Schedule",
+					"protocol": "https",
+					"host": [
+						"v6devapiman",
+						"smartlinxsolutions",
+						"com"
+					],
+					"path": [
+						"stg",
+						"api",
+						"v1",
+						"employees",
+						"{{EmpID}}",
+						"sections",
+						"Schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4.Employee Accruals",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"verify the status code\", function()\r",
+							"{\r",
+							"    pm.response.to.have.status(200)\r",
+							"}\r",
+							")"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{rfmstoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://v6devapiman.smartlinxsolutions.com/stg/api/v1/employees/{{EmpID}}/sections/Accruals",
+					"protocol": "https",
+					"host": [
+						"v6devapiman",
+						"smartlinxsolutions",
+						"com"
+					],
+					"path": [
+						"stg",
+						"api",
+						"v1",
+						"employees",
+						"{{EmpID}}",
+						"sections",
+						"Accruals"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "rfmstoken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "fName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "SSN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "Badgeid",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "PayrollNo",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "EmpID",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
