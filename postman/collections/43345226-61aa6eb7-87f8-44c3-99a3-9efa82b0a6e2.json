@@ -88,6 +88,85 @@
 			"response": []
 		},
 		{
+			"name": "1.1Employee Personal/Licenses",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Verify License inserted status code\", function()\r",
+							"{\r",
+							"pm.response.to.have.status(204)\r",
+							"}\r",
+							")"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "93fe250b-2cca-474f-b0cd-2643d7078689"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "83839a37-0390-4a1d-8c7e-9e0614f90e4d"
+					}
+				}
+			],
+			"id": "43345226-13439d52-ef17-44c1-837c-678b64f56c6f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{rfmstoken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"licensesSubsection\": {\r\n        \"licenses\": [\r\n            {\r\n                \"licenseNumber\": \"One License\",\r\n                \"expirationDate\": \"04-30-2025\",\r\n                \"budgetedPosition\": {\r\n                    \"id\": 260,\r\n                    \"description\": \"RFMS Staff\"\r\n                },\r\n                \"licenseType\": {},\r\n                \"issueDate\": \"04-15-2025\",\r\n                \"seq\": 0\r\n            },\r\n            {\r\n                \"licenseNumber\": \"Two license\",\r\n                \"expirationDate\": \"04-28-2025\",\r\n                \"budgetedPosition\": {\r\n                    \"id\": 257,\r\n                    \"description\": \"RFMS AR\"\r\n                },\r\n                \"licenseType\": {},\r\n                \"issueDate\": \"04-17-2025\",\r\n                \"seq\": 0\r\n            },\r\n            {\r\n                \"licenseNumber\": \"Three license\",\r\n                \"expirationDate\": \"04-24-2025\",\r\n                \"budgetedPosition\": {\r\n                    \"id\": 256,\r\n                    \"description\": \"MAIN DEPARTMENT\"\r\n                },\r\n                \"licenseType\": {},\r\n                \"issueDate\": \"04-18-2025\",\r\n                \"seq\": 0\r\n            },\r\n            {\r\n                \"licenseNumber\": \"Four License\",\r\n                \"expirationDate\": \"04-08-2025\",\r\n                \"budgetedPosition\": {\r\n                    \"id\": 257,\r\n                    \"description\": \"RFMS AR\"\r\n                },\r\n                \"licenseType\": {},\r\n                \"issueDate\": \"04-16-2025\",\r\n                \"seq\": 0\r\n            }\r\n        ]\r\n    },\r\n    \"metadata\": {\r\n        \"actions\": [\r\n            \"edit\",\r\n            \"add\",\r\n            \"delete\"\r\n        ],\r\n        \"fields\": [\r\n            {\r\n                \"fieldName\": \"budgetedPosition\",\r\n                \"isIdentifier\": false,\r\n                \"access\": \"full\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"budgetedPosition.Id\",\r\n                \"isIdentifier\": true,\r\n                \"access\": \"read\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"issueDate\",\r\n                \"isIdentifier\": false,\r\n                \"access\": \"full\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"expirationDate\",\r\n                \"isIdentifier\": false,\r\n                \"access\": \"full\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"licenseNumber\",\r\n                \"isIdentifier\": false,\r\n                \"access\": \"full\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"seq\",\r\n                \"isIdentifier\": true,\r\n                \"access\": \"read\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"licenseType\",\r\n                \"isIdentifier\": false,\r\n                \"access\": \"full\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            },\r\n            {\r\n                \"fieldName\": \"licenseType.LicenseTypeID\",\r\n                \"isIdentifier\": true,\r\n                \"access\": \"read\",\r\n                \"fieldLimitInfo\": {},\r\n                \"isTemporal\": false\r\n            }\r\n        ]\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://v6devapiman.smartlinxsolutions.com/stg/api/v1/employees/{{EmpID}}/sections/personal/licenses",
+					"protocol": "https",
+					"host": [
+						"v6devapiman",
+						"smartlinxsolutions",
+						"com"
+					],
+					"path": [
+						"stg",
+						"api",
+						"v1",
+						"employees",
+						"{{EmpID}}",
+						"sections",
+						"personal",
+						"licenses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "1.2Employee Personal",
 			"event": [
 				{
